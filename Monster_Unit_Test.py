@@ -4,6 +4,7 @@ import unittest
 
 class Monster_JobSearch_Test(unittest.TestCase):
 
+
 	def test_getInfo(self):
 		testObj = Monster_JobSearch()
 		self.assertRaises(TypeError, testObj.getInfo, "software developer python", "", "ny", 12)

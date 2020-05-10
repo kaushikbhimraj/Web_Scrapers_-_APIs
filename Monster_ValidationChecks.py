@@ -13,7 +13,6 @@ class Checks:
 		checks value to raise TypeError and ValueError for integer inputs. 
 
 	"""
-
 	def stringConv_Helper(self, stringValue):
 		return stringValue.replace(" ","-")
 

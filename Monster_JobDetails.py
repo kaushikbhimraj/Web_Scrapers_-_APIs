@@ -7,7 +7,6 @@ class Monster_JobDetails:
 	"""
 	object is used to scrap a level deeper into each of the job posts scraped from the Monster_JobSearch() class. 
 	"""
-
 	def _getDetails(self, href):
 		"""
 		Requests page content for the specific hyperlink and extracts/separates sentences with "||||" separator. Returns single string value. 

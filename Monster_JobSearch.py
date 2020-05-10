@@ -55,7 +55,6 @@ class Monster_JobSearch(Monster_JobDetails):
 				print("Company:     ", company)
 				print("Job Link:    ", hrefLink)
 				print("Job Details: ")
-				
 				temp = self._getDetails(hrefLink)
 				print(temp)
 				"""
