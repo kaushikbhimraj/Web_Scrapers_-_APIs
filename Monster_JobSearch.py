@@ -6,14 +6,23 @@ from Monster_ValidationChecks import Checks
 
 
 class Monster_JobSearch(Monster_JobDetails):
+	"""
+	returns HTML content for an URL request. 
+
+	__init__(self):
+					loads a dictionary object
+					loads a static search URL: https://www.monster.com/jobs/search/Full-Time_8?
+
+	getInfo: 		scraps job information from a returned HTML request
+	"""
 	def __init__(self):
 		self.jobDictionary = {}
 		self.link = "https://www.monster.com/jobs/search/Full-Time_8?"
 
 
-	def getInfo(self, jobTitle, city, state, postedDate):
+	def getInfo(self, jobTitle=None, city=None, state=None, postedDate=None):
 		"""
-		Fetch jobs postings and job details.
+		scrap job postings and related details from static HTML.
 		getInfo(self, jobTitle=str, city=str, state=str, postedDate=int)
 		"""
 
@@ -39,18 +48,20 @@ class Monster_JobSearch(Monster_JobDetails):
 				company  = jobResult.find("div", class_="company").text.strip()
 				hrefLink = jobHyperLink["href"]
 
+				"""
 				# Printing details.
 				print("Job Title:   ", jobTitle)
 				print("Job ID:      ", jobId)
 				print("Company:     ", company)
 				print("Job Link:    ", hrefLink)
 				print("Job Details: ")
-
+				
 				temp = self._getDetails(hrefLink)
 				print(temp)
+				"""
 
 				# Request details from each job link.
-				self.jobDictionary[jobId] = {"jobTitle":jobTitle,"company":company,"href":hrefLink,"jobDetails":temp, "dateAdded":str(datetime.now().date())}
+				# self.jobDictionary[jobId] = {"jobTitle":jobTitle,"company":company,"href":hrefLink,"jobDetails":temp, "dateAdded":str(datetime.now().date())}
 
 
 	def _queryParameters(self, jobTitle, city, state, postedDate):

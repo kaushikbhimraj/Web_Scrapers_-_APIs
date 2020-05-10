@@ -4,6 +4,9 @@ from Monster_ValidationChecks import Checks
 
 
 class Monster_JobDetails:
+	"""
+	object is used to scrap a level deeper into each of the job posts scraped from the Monster_JobSearch() class. 
+	"""
 
 	def _getDetails(self, href):
 		"""
