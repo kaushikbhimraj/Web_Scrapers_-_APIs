@@ -47,20 +47,10 @@ class Monster_JobSearch(Monster_JobDetails):
 				jobTitle = jobResult.find("h2", class_="title").text.strip()
 				company  = jobResult.find("div", class_="company").text.strip()
 				hrefLink = jobHyperLink["href"]
-
-				"""
-				# Printing details.
-				print("Job Title:   ", jobTitle)
-				print("Job ID:      ", jobId)
-				print("Company:     ", company)
-				print("Job Link:    ", hrefLink)
-				print("Job Details: ")
-				temp = self._getDetails(hrefLink)
-				print(temp)
-				"""
+				temp     = self._getDetails(hrefLink)
 
 				# Request details from each job link.
-				# self.jobDictionary[jobId] = {"jobTitle":jobTitle,"company":company,"href":hrefLink,"jobDetails":temp, "dateAdded":str(datetime.now().date())}
+				self.jobDictionary[jobId] = {"jobTitle":jobTitle,"company":company,"href":hrefLink,"jobDetails":temp, "dateAdded":str(datetime.now().date())}
 
 
 	def _queryParameters(self, jobTitle, city, state, postedDate):
@@ -85,8 +75,3 @@ class Monster_JobSearch(Monster_JobDetails):
 		tm    = str(postedDate)
 
 		return "q=" + q + "&where=" + where +"&tm=" + tm + "&stpage=1&page=2"
-
-
-# Driver Code
-Monster_JobSearch().getInfo("software developer python", "new york", "ny", 12)
-
