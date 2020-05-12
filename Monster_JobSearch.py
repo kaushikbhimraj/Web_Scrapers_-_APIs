@@ -1,11 +1,11 @@
+import json
 import requests
-from datetime import datetime
 from bs4 import BeautifulSoup
-from Monster_JobDetails import Monster_JobDetails
 from Monster_ValidationChecks import Checks
+from Monster_Extract_Key_Words import JobProcess
 
 
-class Monster_JobSearch(Monster_JobDetails):
+class Monster_JobSearch(JobProcess):
 	"""
 	returns HTML content for an URL request. 
 
@@ -16,7 +16,6 @@ class Monster_JobSearch(Monster_JobDetails):
 	getInfo: 		scraps job information from a returned HTML request
 	"""
 	def __init__(self):
-		self.jobDictionary = {}
 		self.link = "https://www.monster.com/jobs/search/Full-Time_8?"
 
 
@@ -27,12 +26,14 @@ class Monster_JobSearch(Monster_JobDetails):
 		"""
 
 		paramsLink 		= self.link + self._queryParameters(jobTitle, city, state, postedDate)
+		print(paramsLink)
 		page 			= requests.get(paramsLink)
 
 		# Fetching data using HTML tags.
 		soupPage 		= BeautifulSoup(page.content, "html.parser")
 		results 		= soupPage.find(id="ResultsContainer")
 		jobResults 		= results.find_all("section", class_="card-content")
+<<<<<<< HEAD
 		jobCount 		= 0
 
 		# Running through each job in list. 
@@ -51,6 +52,11 @@ class Monster_JobSearch(Monster_JobDetails):
 
 				# Request details from each job link.
 				self.jobDictionary[jobId] = {"jobTitle":jobTitle,"company":company,"href":hrefLink,"jobDetails":temp, "dateAdded":str(datetime.now().date())}
+=======
+		
+		# Output a json format.
+		print(json.dumps(self.getResults(jobResults), indent=4))
+>>>>>>> job_details_2020_10_03
 
 
 	def _queryParameters(self, jobTitle, city, state, postedDate):
@@ -74,4 +80,12 @@ class Monster_JobSearch(Monster_JobDetails):
 		where = check.stringConv_Helper(city) + "__2C-" + check.stringConv_Helper(state.upper())
 		tm    = str(postedDate)
 
+<<<<<<< HEAD
 		return "q=" + q + "&where=" + where +"&tm=" + tm + "&stpage=1&page=2"
+=======
+		return "q=" + q + "&where=" + where +"&tm=" + tm
+
+
+# Driver
+Monster_JobSearch().getInfo("python developer", "san francisco", "ca", 14)
+>>>>>>> job_details_2020_10_03
