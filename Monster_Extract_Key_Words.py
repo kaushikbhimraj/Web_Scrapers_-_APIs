@@ -1,6 +1,6 @@
-import nltk
+from nltk import word_tokenize
+from nltk import pos_tag
 from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
 from Monster_ValidationChecks import Checks
 from Monster_JobDetails import Monster_JobDetails
 
@@ -22,52 +22,40 @@ class JobProcess(Monster_JobDetails):
 			jobHyperLink = jobResult.find("a")
 
 			if jobHyperLink is not None:
-
 				jobCount += 1
+
+				# Scraping
 				jobId 	 = jobResult['data-jobid']
-				Checks().checkStrValType_Helper(jobId)
-						
 				jobTitle = jobResult.find("h2", class_="title").text.strip()
-				Checks().checkStrValType_Helper(jobTitle)
-
 				company  = jobResult.find("div", class_="company").text.strip()
-				Checks().checkStrValType_Helper(company)
-
 				hrefLink = jobHyperLink["href"]
+				
+				# Making sure whether the HTML tags are in place. 
+				Checks().checkStrValType_Helper(jobId)
+				Checks().checkStrValType_Helper(jobTitle)
+				Checks().checkStrValType_Helper(company)
 				Checks().checkStrValType_Helper(hrefLink)
 
 				jobDesc  = self._getDetails(hrefLink)
 				Checks().checkStrValType_Helper(jobDesc)
-
+				
 				keyWords = self._extractKeyWords(jobDesc)
 				mainCache[jobId] = {"Company":company, "Job Title":jobTitle, "Job Details":jobDesc, "KeyWords":keyWords}
 
-		print("Number of Jobs found: ", jobCount)
+		print("JOBS FOUND: ")
+		print(jobCount)
+		print("\n")
 		return mainCache
 
 
 
 	def _extractKeyWords(self, jobDesc):
 		tempCache = {}
-		newTokens = []
 		
+		# Tokenizing and Tagging 
 		changeStrSep = jobDesc.replace("||||", ". ")
-		tokens  = nltk.word_tokenize(changeStrSep)
-
-		"""
-		# Lemmetize
-		sw  = stopwords.words("english")
-		wnl = WordNetLemmatizer()
-
-		while tokens:
-			if tokens[0] in sw or tokens[0] in [".", ","]:
-				tokens.pop(0)
-			else:
-				newTokens.append(wnl.lemmatize(tokens.pop(0)))
-		"""
-
-		# POS Tagging
-		tags = nltk.pos_tag(tokens, tagset="universal")
+		tokens       = word_tokenize(changeStrSep)
+		tags         = pos_tag(tokens, tagset="universal")
 
 		# Organize into cache
 		# Ignoring DETERMINERS, ASPOSITIONS, ADVERBS, CONJUNCTIONS
