@@ -1,5 +1,6 @@
 import json
 import requests
+from datetime import datetime
 from bs4 import BeautifulSoup
 from Monster_ValidationChecks import Checks
 from Monster_Extract_Key_Words import JobProcess
@@ -26,8 +27,20 @@ class Monster_JobSearch(JobProcess):
 		"""
 
 		paramsLink 		= self.link + self._queryParameters(jobTitle, city, state, postedDate)
-		print(paramsLink)
 		page 			= requests.get(paramsLink)
+		
+		# Request info
+		print("\n")
+		print("QUERY LINK:")
+		print(paramsLink)
+		print("\n")
+		print("STATUS CODE:")
+		print(page.status_code)
+		print("\n")
+
+		# Checking for request errors.
+		if page.status_code == 404:
+			raise Exception("Please check link: " + self.link)
 
 		# Fetching data using HTML tags.
 		soupPage 		= BeautifulSoup(page.content, "html.parser")
@@ -55,7 +68,17 @@ class Monster_JobSearch(JobProcess):
 =======
 		
 		# Output a json format.
+<<<<<<< HEAD
 		print(json.dumps(self.getResults(jobResults), indent=4))
+>>>>>>> job_details_2020_10_03
+=======
+		fileName 		= "Monster_JobSearch_" + datetime.today().strftime("%Y-%m-%d-%H_%M_%S") + ".json"
+		with open(fileName, "w") as outfile:
+			json.dump(self.getResults(jobResults), outfile)
+			outfile.close()
+
+		print("JOB FETCHING COMPLETE:")
+		print("created " + fileName)
 >>>>>>> job_details_2020_10_03
 
 
@@ -84,8 +107,11 @@ class Monster_JobSearch(JobProcess):
 		return "q=" + q + "&where=" + where +"&tm=" + tm + "&stpage=1&page=2"
 =======
 		return "q=" + q + "&where=" + where +"&tm=" + tm
+<<<<<<< HEAD
 
 
 # Driver
 Monster_JobSearch().getInfo("python developer", "san francisco", "ca", 14)
+>>>>>>> job_details_2020_10_03
+=======
 >>>>>>> job_details_2020_10_03
