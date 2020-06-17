@@ -15,13 +15,13 @@ class Monster_JobDetails:
 
 		jobDetailsStr = ""	
 		page 		  = requests.get(href)
-		soupPage      = BeautifulSoup(page.content, "html.parser")
+		soupPage          = BeautifulSoup(page.content, "html.parser")
 		jobDetails 	  = soupPage.find(class_="container job-body-container")
 
 
 		# Check if the job posting still exists.
 		if jobDetails:
-			rawText 	 = jobDetails.text.strip()
+			rawText      = jobDetails.text.strip()
 			rawTextArray = rawText.split(".")
 
 			for line in rawTextArray:

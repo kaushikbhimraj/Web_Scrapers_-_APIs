@@ -1,5 +1,4 @@
-
-
+# Main program for the application.
 from Monster_JobSearch import Monster_JobSearch
 
 jobTitle   = input("Enter Job Title to search:       ")

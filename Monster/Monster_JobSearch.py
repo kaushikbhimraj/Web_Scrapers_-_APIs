@@ -65,8 +65,11 @@ class Monster_JobSearch(JobProcess):
 				# Request details from each job link.
 				self.jobDictionary[jobId] = {"jobTitle":jobTitle,"company":company,"href":hrefLink,"jobDetails":temp, "dateAdded":str(datetime.now().date())}
 		
+<<<<<<< HEAD:Monster_JobSearch.py
 		# Output a json format.
 		print(json.dumps(self.getResults(jobResults), indent=4))
+=======
+>>>>>>> 74bdfe07231e0f0641591c8a99d74a4392d25d38:Monster/Monster_JobSearch.py
 		fileName 		= "Monster_JobSearch_" + datetime.today().strftime("%Y-%m-%d-%H_%M_%S") + ".json"
 		with open(fileName, "w") as outfile:
 			json.dump(self.getResults(jobResults), outfile)
@@ -98,4 +101,7 @@ class Monster_JobSearch(JobProcess):
 		tm    = str(postedDate)
 
 		return "q=" + q + "&where=" + where +"&tm=" + tm + "&stpage=1&page=2"
+<<<<<<< HEAD:Monster_JobSearch.py
 
+=======
+>>>>>>> 74bdfe07231e0f0641591c8a99d74a4392d25d38:Monster/Monster_JobSearch.py
