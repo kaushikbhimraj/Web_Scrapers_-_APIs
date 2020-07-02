@@ -1,6 +1,6 @@
-
 import json
 from time import sleep
+from datetime import date
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
@@ -9,6 +9,10 @@ from selenium.webdriver.common.keys import Keys
 # username and password are provided from a different file. 
 class LinkedInBot:
 	def __init__(self):
+
+		# Sleep Time
+		self.short        = 3
+		self.long         = 5
 
 		# Login information
 		self._path        = "/mnt/c/Users/kaush/Desktop/Code/03_Git_Projects/Job_Search_Web_Crawlers_202005/LinkedInBot/chromedriver.exe"
@@ -23,13 +27,19 @@ class LinkedInBot:
 		self.job_title    = "Software Engineer"
 		self.location     = "United States"
 
+		# File Path for text files
+		self.saveTo       = "/mnt/c/Users/kaush/Desktop/Daily_Jobs/"
+
+
 	def _setDriver(self):
 		self._driver     = webdriver.Chrome(self._path)
+
 		
 	def _getCredentials(self):
 		with open(self._json_path) as json_file:
 			self._credentials = json.load(json_file)
 		json_file.close()
+
 
 	def _setCredentials(self):
 		self._username = self._credentials["username"]
@@ -43,7 +53,7 @@ class LinkedInBot:
 		# Click the Sign in button
 		self._driver.get(self._base_url)
 		self._driver.find_element_by_xpath("//a[contains(text(), 'Sign in')]").click()
-		sleep(3)
+		sleep(self.short)
 
 		# Get Credentials.
 		self._getCredentials()
@@ -60,7 +70,7 @@ class LinkedInBot:
 		self.Jobs()
 
 		# Parse through the first 10 filtered positions.
-		self.getJobLinks()
+		self.getJobDetails()
 
 		return self._driver
 
@@ -70,7 +80,7 @@ class LinkedInBot:
 
 		# Load the jobs pages. 
 		self._driver.get(self._base_url + "/jobs/")
-		sleep(5)
+		sleep(self.long)
 
 		# Enter job title in the keyword tab.
 		self._driver.find_element_by_xpath("//input[contains(@id, 'jobs-search-box-keyword-id-')]").click()
@@ -82,12 +92,12 @@ class LinkedInBot:
 
 		# Click the search button. 
 		self._driver.find_element_by_xpath("//button[@class=\"jobs-search-box__submit-button artdeco-button artdeco-button--3 ml2\"]").click()
-		sleep(5)
+		sleep(self.long)
 
-		# After the job page loads, click on the 'All Filers' button. 
+		# After the job page loads, click on the 'All Filters' button. 
 		# This will open additional settings to narrow job search. 
 		self._driver.find_element_by_xpath("//button[@data-control-name=\"all_filters\"]").click()
-		sleep(2)
+		sleep(self.short)
 
 		# Sort by: Most Recent
 		self._driver.find_element_by_xpath("//input[@id=\"sortBy-DD\"]").send_keys(Keys.SPACE)
@@ -97,40 +107,71 @@ class LinkedInBot:
 
 		# Select all companies in list. 
 		print("\n")
-		FAANG = ["Google", "Microsoft", "Netflix", "Amazon", "Facebook", "Twitter", "Reddit", "eBay", "LinkedIn"]
+		FAANG = ["Google", "Microsoft", "Netflix", "Amazon", "Facebook", "Twitter", "Reddit, Inc.", "eBay", "LinkedIn"]
 		print("Searching jobs in the following companies...")
 		for company in FAANG:
 			self._driver.find_element_by_xpath("//input[contains(@placeholder, 'Add a company')]").click()
 			self._driver.find_element_by_xpath("//input[contains(@placeholder, 'Add a company')]").send_keys(company)
-			sleep(3)
+			sleep(self.long)
 			self._driver.find_element_by_xpath("//input[contains(@placeholder, 'Add a company')]").send_keys(Keys.ENTER)
 			print(company)
 		
 		# Experience Level: Entry-Level / Associates Level
 		self._driver.find_element_by_xpath("//input[@id=\"experience-2\"]").send_keys(Keys.SPACE)
 		self._driver.find_element_by_xpath("//input[@id=\"experience-3\"]").send_keys(Keys.SPACE)
-		sleep(2)
+		sleep(self.short)
 		
 		# Click 'Apply'.
 		self._driver.find_element_by_xpath("//button[@class=\"search-advanced-facets__button--apply ml4 mr2 artdeco-button artdeco-button--3 artdeco-button--primary ember-view\"]").click()
-		sleep(2)
+		sleep(self.short)
 
 		print("Sucessfully created filter for job search!")
 		print("\n")
 
-	
-	def getJobLinks(self):
-		print("Fetching links for your job positions...")
-		job_buttons = self._driver.find_elements_by_xpath("//a[@class=\"disabled ember-view job-card-container__link job-card-list__title\"]")
-		for job_button in job_buttons:
-			print(type(job_button))
 
+	# Get the job details
+	def getJobDetails(self):
+		print("Saving jobs to file...")
+		job_buttons = self._driver.find_elements_by_xpath("//li[contains(@class, 'occludable-update artdeco-list__item--offset-2 artdeco-list__item p0 ember-view')]")
 
+		# Save the 10 most recent jobs. 
+		index = 0
+		while True:
+			if index > 10:
+				break
 
-			
-	# Save the text scraped from the HTML to file/JSON on disk.
-	def saveToFile(self):
-		pass
+			try:
+				# Scrap HTML contents for the job and save it in a text file. 
+				# Each job position will be saved as a text file. 
+				# The name on the text file will be a combination of the company name + position name + current date. 
+				job_buttons[index].click()
+				job_name     = self._driver.find_element_by_xpath("//h2[@class=\"jobs-details-top-card__job-title t-20 t-black t-normal\"]").text
+				company_name = self._driver.find_element_by_xpath("//a[@data-control-name=\"company_link\"]").text
+				job_details  = self._driver.find_element_by_xpath("//div[@id=\"job-details\"]").text
 
-# Run
+				today = date.today()
+				file  = open(self.saveTo+company_name+"_"+job_name+"_"+today.strftime("%d.%m.%Y")+".txt", "a")
+				file.writelines("Company Name:    " + company_name)
+				file.writelines("\n")
+				file.writelines("Position:        " + job_name)
+				file.writelines("\n")
+				file.writelines("Job Description: ")
+				file.writelines("\n")
+				file.writelines("\n")
+				file.writelines(job_details)
+				file.close()
+
+				# Print job name, company name for the users. 
+				print("Position:     ", job_name)
+				print("Company Name: ", company_name)
+				print("\n")
+				sleep(self.long)
+
+			except IndexError:
+				break
+			index += 1
+
+		print("Jobs were saved to file...")
+
+# Run code
 x = LinkedInBot()._main()
