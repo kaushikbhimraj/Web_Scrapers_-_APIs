@@ -5,8 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
 
-# Since this program is being executed from a linux env in windows, the following path needs to be specified.
-# username and password are provided from a different file. 
+# Since this program is being executed from a linux env in windows, the paths are different.
 class LinkedInBot:
 	def __init__(self):
 
@@ -59,7 +58,7 @@ class LinkedInBot:
 		self._getCredentials()
 		self._setCredentials()
 
-		# Login using username and password. 
+		# Login username and password. 
 		self._driver.find_element_by_id("username").send_keys(self._username)
 		self._driver.find_element_by_id("password").send_keys(self._password)
 
@@ -106,6 +105,7 @@ class LinkedInBot:
 		self._driver.find_element_by_xpath("//input[@id=\"jobType-F\"]").send_keys(Keys.SPACE)
 
 		# Select all companies in list. 
+		# The all the companies specified are printed on screen only after it is selected in the job search filter. 
 		print("\n")
 		FAANG = ["Google", "Microsoft", "Netflix", "Amazon", "Facebook", "Twitter", "Reddit, Inc.", "eBay", "LinkedIn"]
 		print("Searching jobs in the following companies...")
@@ -141,9 +141,8 @@ class LinkedInBot:
 				break
 
 			try:
-				# Scrap HTML contents for the job and save it in a text file. 
-				# Each job position will be saved as a text file. 
-				# The name on the text file will be a combination of the company name + position name + current date. 
+				# Scrap HTML contents for the job and save it in a text file.  
+				# File name will be a combination of the company name + position name + current date. 
 				job_buttons[index].click()
 				job_name     = self._driver.find_element_by_xpath("//h2[@class=\"jobs-details-top-card__job-title t-20 t-black t-normal\"]").text
 				company_name = self._driver.find_element_by_xpath("//a[@data-control-name=\"company_link\"]").text
@@ -161,7 +160,7 @@ class LinkedInBot:
 				file.writelines(job_details)
 				file.close()
 
-				# Print job name, company name for the users. 
+				# Print details for user. 
 				print("Position:     ", job_name)
 				print("Company Name: ", company_name)
 				print("\n")
